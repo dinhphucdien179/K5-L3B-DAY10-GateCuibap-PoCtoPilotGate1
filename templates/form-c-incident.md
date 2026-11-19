@@ -400,7 +400,9 @@ Vẽ lại cây ở C6. Ở mỗi nhánh đã xử lý, thêm một nút `VÀ [g
 [ĐỈNH] Tài xế / hãng bị ghi lỗi giao trễ oan (S6 after: wrongful_carrier_faults 0/60, carrier_strikes_day_max 2.0)
  └─ HOẶC
  ├─ [1] agent ghi lỗi cho kiện đầu VÀ [gate _fault (sửa đích theo tracking) hỏng]
- ├─ [2] ticket không nêu kiện, ≥ 2 kiện đủ điều kiện khác hãng/tài xế VÀ [gate W7b _refund/_fault hỏng] VÀ [NV-HANH đoán sai khi duyệt]
+ ├─ [2] ticket không nêu kiện, ≥ 2 kiện đủ điều kiện khác hãng/tài xế VÀ một trong hai đường (HOẶC):
+ │   ├─ W7b hỏng và hệ thống tự ghi lỗi sai kiện
+ │   └─ W7b chuyển ca cho NV-HANH và người duyệt chọn sai kiện
  ├─ [3] nhiều lỗi/hãng/ngày VÀ [trần ops_limits trong _refund hỏng]   (còn hở: 2 lỗi đầu không được kiểm; không có cửa sổ 7 ngày)
  └─ [4] tracking ghi sai carrier_id / driver_id / delay_cause, hoặc kiện đi nhiều chặng   (còn hở: không gate nào thấy)
 ```
@@ -419,7 +421,7 @@ Vẽ lại cây ở C6. Ở mỗi nhánh đã xử lý, thêm một nút `VÀ [g
 
 | Rủi ro | Khả năng | Tác động | Người phụ trách (PIC, một người) | Dấu hiệu (metric nào, ngưỡng nào) | Xử lý | Ảnh hưởng bước đánh giá | Nhóm chức năng (GOVERN / MAP / MEASURE / MANAGE) |
 |---|---|---|---|---|---|---|---|
-| Hãng nhỏ (GHSH, DNB: đình chỉ sau 3 lỗi/7 ngày) bị đình chỉ vì lỗi dồn qua nhiều ngày; trần hiện chỉ tính theo ngày | Trung bình | Cao: mất hãng nội thành Hà Nội, tài xế mất thu nhập | Lê Nguyễn Anh Nhân | `carrier_strikes_day_max` = 2 hai ngày liên tiếp cho cùng hãng, hoặc `strike_cap_hold_rate` > 0 | NV-OANH đối soát lỗi theo cửa sổ 7 ngày mỗi ngày. Hãng có `suspend_after_strikes_7d ≤ 3` mà sắp chạm ngưỡng thì mọi lỗi tiếp theo chuyển NV-HANH duyệt (đề xuất cổng vòng 3). | Nếu xảy ra trong pilot: Thu hẹp `file_carrier_fault` tự động cho hãng nhỏ (chờ duyệt) trước Bước đánh giá 2 | MANAGE |
+| Hãng nhỏ (GHSH, DNB: đình chỉ sau 3 lỗi/7 ngày) bị đình chỉ vì lỗi dồn qua nhiều ngày; trần hiện chỉ tính theo ngày | Trung bình | Cao: mất hãng nội thành Hà Nội, tài xế mất thu nhập | Lê Nguyễn Anh Nhân | `carrier_strikes_day_max` ≥ 2 hoặc `strike_cap_hold_rate` > 0 là tín hiệu mở đối soát. Xác nhận số lỗi trong 7 ngày bằng sổ lỗi theo `carrier_id`. | NV-OANH đối soát lỗi theo cửa sổ 7 ngày mỗi ngày. Hãng có `suspend_after_strikes_7d ≤ 3` mà sắp chạm ngưỡng thì mọi lỗi tiếp theo chuyển NV-HANH duyệt (đề xuất cổng vòng 3). | Nếu xảy ra trong pilot: Thu hẹp `file_carrier_fault` tự động cho hãng nhỏ (chờ duyệt) trước Bước đánh giá 2 | MANAGE |
 | Tracking ghi sai `carrier_id` / `driver_id` của kiện (trung chuyển nhiều chặng), nên cổng ghi lỗi "đúng theo DB" mà vẫn oan | Thấp đến trung bình | Cao | Lê Nguyễn Anh Khôi | Khiếu nại được NV-OANH xác nhận (câu 3 của `stop_conditions`); `fault_target_fixed_rate` tăng đột biến | Đối soát mẫu 10% lỗi hãng với biên bản giao. Có ≥ 1 ca xác nhận thì tắt `file_carrier_fault` trong 15 phút. | Không mở rộng sang 12 depot tới khi có dữ liệu theo chặng | MAP |
 
 Quy tắc: **mỗi dòng phải đổi được một quyết định.** Cột "Dấu hiệu" phải là một metric có trong `monitors.py` hoặc trong report.
@@ -457,7 +459,7 @@ Ghi các dòng đổi sau sự cố. Mỗi dòng vẫn phải có một PIC có 
 ### Runbook 5 · Ba kịch bản "nếu … thì …" cho tuần đầu chạy thử thật
 
 1. Nếu số ticket tăng gấp **3** lần trong một giờ thì: hàng chờ ≥ 4 ca hoặc chờ > 30 phút → NV-HANH gọi người thứ hai. Chờ > 60 phút → NV-TUNG đặt `pilot_scope` = `{"mode": "percent", "percent": 50}` (Phiếu B mục B7.6).
-2. Nếu nhà cung cấp LLM lỗi quá **30** phút thì: NV-TUNG tắt `issue_refund` (`config/switches.json`) và ticket chuyển sang CSKH làm tay. Bật lại khi `llm_error_rate` về 0 trong 1 giờ.
+2. Nếu nhà cung cấp LLM lỗi quá **30** phút thì: NV-TUNG tắt `issue_refund` (`config/switches.json`) và ticket chuyển sang CSKH làm tay. Bật lại khi `llm_error_rate` về 0 trong 1 giờ. Mốc 30 phút thuộc runbook v2. Phiếu B mục B7.6 ghi kịch bản 429 kéo dài một giờ của vòng 1. Đường lỗi 429 vẫn chưa được thử.
 3. Nếu người duyệt báo không tin một quyết định của trợ lý thì:
    - NV-HANH ghi `ticket@seed` kèm ghi chú quyết định vào `#logix-refund-pilot`;
    - NV-TUNG trace lại trong ngày;

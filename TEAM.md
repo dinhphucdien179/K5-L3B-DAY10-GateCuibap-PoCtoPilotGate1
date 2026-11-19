@@ -106,17 +106,22 @@ Mỗi thành viên tự viết một mục bên dưới (chép mẫu, đổi ti�
 
 - Vai: Vận hành và pháp lý.
 - Câu của đề: 1.2, 1.4, 2.4, 2.10, 3.3, 3.7.
-- Mục phiếu: Phiếu A mục A1 (câu 1.2), A2 (cột Telemetry); Phiếu B mục B4, B5, B7.5, B7.6; Phiếu C mục C3.2, C4, C9–C11.
+- Mục phiếu: Phiếu A mục A1 (câu 1.2), A2 (cột Telemetry); Phiếu B mục B4, B5, B6 (pre-mortem chung), B7.5, B7.6; Phiếu C mục C3.2, C4, C5 (câu 3.3), C7 (`operations`/`legal`), C9–C11.
 - File: `config/operating_gates.json` (mục `operations`, `legal`), `submission/submission.json`.
 
 ### Đóng góp cụ thể
 
-(Nhân tự viết.)
+- **Phiếu A:** Đối chiếu mục tiêu của NV-OANH về đối soát với hãng và shop, và mục tiêu của NV-HANH về duyệt đúng thẩm quyền trong SLA. Làm rõ telemetry khi pilot không có nhãn đúng/sai. Chỉ số trường thừa trong production tính trên số thông báo gửi hãng, còn monitor trong lab tính trên số trial.
+- **Phiếu B:** Rà soát HAZOP, checklist có người phụ trách và runbook 1–3 theo cấu hình vòng 1. Làm rõ khi nào người trực tạm tắt hoàn tự động và khi nào cả bàn áp dụng quyết định Gate **Dừng** theo tiêu chí đã ký. Đối chiếu phương án giờ cao điểm với cấu hình một người trực, công suất 6 ca/giờ và SLA 60 phút.
+- **Phiếu C:** Rà soát quy trình xử lý S6 từ lúc chuyển ca thiếu mã kiện sang NV-HANH đến lúc NV-OANH đối soát khiếu nại. Cập nhật fault tree để thể hiện hai đường gây lỗi riêng, gồm hệ thống tự ghi sai kiện và người duyệt chọn sai kiện sau khi nhận ca. Làm rõ cách dùng monitor để mở đối soát và cách đếm lỗi 7 ngày theo từng hãng trong sổ lỗi. Đối chiếu điều kiện tắt ghi lỗi trong 15 phút và ba câu kết luận trong `submission/submission.json` với Phiếu C.
 
 ### Bằng chứng
 
-(Nhân tự viết: mã commit, mã lần chạy, dòng trong phiếu.)
+- Bằng chứng nhóm: `d3e8e8d` (Phiếu A, A1 câu 1.2 và A2 Telemetry), `90fccaa` (Phiếu B, B4–B6 và B7.5–B7.6), `b6784f4` (điều kiện dừng thứ ba), `0535d9d` (Phiếu C, C3.2, C4, C5 câu 3.3 và C9–C11).
+- Kết quả nhóm: `R-S6-after-20261119-214351-48706e` và `R-S6-grade-20261119-214350-48706e`. Mốc after ghi 0 lỗi hãng oan, 0 lần lộ PII, 0 ca ùn và ROI 0,46.
+- Codex hỗ trợ đối chiếu các phiếu với cấu hình và báo cáo, làm rõ cách đo và runbook, và tập hợp bằng chứng nhóm.
 
 ### Exit ticket
 
-(Nhân tự viết.)
+- **Học được:** Cổng chuyển người duyệt giúp hệ thống tránh tự ghi lỗi khi thiếu mã kiện. Người duyệt vẫn cần xác minh kiện và đối chiếu tracking trước khi quyết định. Trần 2 lỗi mỗi hãng mỗi ngày hạn chế số lỗi tự động, nhưng lỗi từ nhiều ngày vẫn có thể cộng dồn đến ngưỡng đình chỉ trong 7 ngày.
+- **Còn chưa chắc:** Với kiện giao qua nhiều chặng, tracking có đủ dữ liệu để xác định đúng hãng và tài xế ở chặng bị trễ hay không. Trong pilot, cần đối chiếu mẫu với biên bản giao của hãng, ghi nhận khiếu nại đã xác minh và theo dõi số lỗi của từng hãng trong cửa sổ 7 ngày.
