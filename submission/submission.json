@@ -1,12 +1,16 @@
 {
-  "team": "",
-  "members": [],
-  "incident": "",
-  "decision_v1": "",
-  "decision_v2": "",
+  "team": "K5-L3B-DAY10-GateCuibap-PoCtoPilotGate1",
+  "members": [
+    "DinhPhucDien-2A202603876",
+    "LeNguyenAnhKhoi-2A202603755",
+    "LeNguyenAnhNhan-2A202603838"
+  ],
+  "incident": "S6",
+  "decision_v1": "Tiếp tục",
+  "decision_v2": "Tiếp tục",
   "three_lines": {
-    "environment_assumption": "",
-    "reduce_or_prevent": "",
-    "measure_in_pilot": ""
+    "environment_assumption": "Mỗi kiện chỉ do một hãng và một tài xế giao từ kho tới người nhận, và tracking ghi đúng carrier_id, driver_id, delay_cause của từng kiện; nếu kiện đi qua nhiều chặng hoặc điều phối nhập nguyên nhân chung cho cả đơn thì cổng vẫn ghi lỗi \"đúng theo DB\" mà có thể oan.",
+    "reduce_or_prevent": "Cổng NGĂN máy tự đoán: ticket không nêu kiện mà có từ 2 kiện đủ điều kiện ghi lỗi khác hãng hoặc tài xế thì không có dòng tiền hay lỗi nào được ghi, và lỗi luôn ghi đúng kiện theo tracking (S6 after: 0 lỗi oan trên 60 lần chạy, base: 40); nhưng tổng thể chỉ GIẢM, vì người duyệt vẫn có thể chọn sai kiện, trần 2 lỗi/hãng/ngày không biết 2 lỗi đầu đúng hay sai, và cổng tin tracking.",
+    "measure_in_pilot": "Tỉ lệ lỗi hãng bị hãng hoặc tài xế khiếu nại và được NV-OANH xác nhận là oan trên mỗi 100 lỗi, tỉ lệ ticket không nêu kiện ở đơn tách kiện (ambiguous_fault_target_rate thật) cùng thời gian NV-HANH hỏi lại khách, và số lỗi của mỗi hãng nhỏ trong cửa sổ 7 ngày."
   }
 }
