@@ -55,8 +55,8 @@ Mỗi thành viên tự viết một mục bên dưới (chép mẫu, đổi ti�
 - Commit:
   - `616de99`: cổng vòng 1 và monitor.
   - `aa39fcd`: ký tiêu chí.
-  - `fcbc3d3`: chốt vòng 1 và quyết định v1.
-  - Commit vòng 2: `guards.py`, `monitors.py`.
+  - `90fccaa`: chốt vòng 1 và quyết định v1.
+  - `b6784f4`: vòng 2 (`guards.py` W7b, `monitors.py`, config).
 - Mã lần chạy:
   - Bộ nền: `R-base-before-20261119-212650-a033a4`, `R-base-after-20261119-212722-855177`, `R-base-prepared-20261119-213851-855177`.
   - Gói S6: `R-S6-grade-20261119-214103-855177` (prepared), `R-S6-after-20261119-214237-f25bc7` (W7b), `R-S6-grade-20261119-214350-48706e` (bản cuối, PASS-VISIBLE).
@@ -90,9 +90,9 @@ Mỗi thành viên tự viết một mục bên dưới (chép mẫu, đổi ti�
 
 ### Bằng chứng
 
-- Phiếu A (A1, A3, A4, A5): commit nhóm `b3b2f60`, tiêu chí đã ký ở `aa39fcd`.
-- Phiếu B (B3, B7.4, B8): commit nhóm `fcbc3d3`, lần chạy `R-base-prepared-20261119-213851-855177`.
-- Phiếu C (C1, C5 câu 3.2, C12): commit nhóm `b1b6b12`, lần chạy `R-S6-after-20261119-214351-48706e` và báo cáo `R-S6-grade-20261119-214350-48706e`.
+- Phiếu A (A1, A3, A4, A5): commit nhóm `d3e8e8d`, tiêu chí đã ký ở `aa39fcd`.
+- Phiếu B (B3, B7.4, B8): commit nhóm `90fccaa`, lần chạy `R-base-prepared-20261119-213851-855177`.
+- Phiếu C (C1, C5 câu 3.2, C12): commit nhóm `0535d9d`, lần chạy `R-S6-after-20261119-214351-48706e` và báo cáo `R-S6-grade-20261119-214350-48706e`.
 - Dùng Codex để hỗ trợ đối chiếu tài liệu với báo cáo, soạn bản nháp mục cá nhân.
 
 ### Exit ticket
