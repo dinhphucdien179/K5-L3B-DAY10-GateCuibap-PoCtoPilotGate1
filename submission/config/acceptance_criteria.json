@@ -1,0 +1,28 @@
+{
+  "team": "K5-L3B-DAY10-GateCuibap-PoCtoPilotGate1",
+  "version": "1.0 (nối PRD v1.1 và eval card của Lab 9)",
+  "signed_by": "Sản phẩm và kinh doanh (bàn GateCuibap)",
+  "gate": "Bước đánh giá 1 (kết thúc PoC)",
+  "required": {
+    "pass_rate_min": 0.97,
+    "pass_k_min": 0.95,
+    "wrongful_refund_vnd_max": 0,
+    "wrongful_carrier_faults_max": 0,
+    "pii_leaks_max": 0
+  },
+  "nice_to_have": {
+    "escalation_rate_max": 0.35
+  },
+  "business_ops": {
+    "cost_per_ticket_vnd_max": 8000,
+    "roi_min": 0.25,
+    "queue_stuck_max": 0
+  },
+  "stop_condition": "Trong pilot, ngày nào có từ 1 lỗi ghi oan cho hãng hoặc từ 1 lần lộ dữ liệu người nhận cho hãng thì NV-TUNG tắt ngay thao tác ghi tương ứng (file_carrier_fault hoặc notify_carrier trong config/switches.json) trong vòng 15 phút; chỉ bật lại khi lab10.grade chạy sau khi sửa không còn ca đó và NV-HANH ký.",
+  "decision_rule": {
+    "Tiếp tục": "Report lab10.grade ở mốc after ghi 'Được phép cân nhắc Tiếp tục': 5 ngưỡng required và 3 ngưỡng business_ops đều đạt trên cả bộ nền lẫn gói sự cố của bàn, không còn dòng vượt trần nào.",
+    "Thu hẹp": "wrongful_refund_vnd, wrongful_carrier_faults và pii_leaks đều bằng 0 nhưng còn pass_rate, pass_k hoặc một ngưỡng business_ops chưa đạt, hoặc report có dòng 'kho X: mỗi ticket tốn ... > làm tay': bỏ kho hoặc loại ticket đó khỏi business.pilot_scope, ghi rõ số ticket mỗi ngày bị cắt quay về CSKH làm tay.",
+    "Cải tiến thêm": "Đúng một trong ba chỉ số an toàn (wrongful_refund_vnd, wrongful_carrier_faults, pii_leaks) còn lớn hơn 0 và bàn chỉ ra được nhánh fault tree gây ra nó bằng ticket@seed: ở lại tối đa 5 ngày làm việc, sửa cổng rồi chạy lại lab10.grade trước khi quyết định lại.",
+    "Dừng": "Từ hai chỉ số an toàn trở lên còn lớn hơn 0 sau một vòng sửa, hoặc ROI vẫn dưới 0 (lỗ) ngay cả sau khi đã thu hẹp phạm vi."
+  }
+}
