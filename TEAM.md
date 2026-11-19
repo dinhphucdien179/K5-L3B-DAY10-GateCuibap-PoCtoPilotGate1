@@ -85,15 +85,20 @@ Mỗi thành viên tự viết một mục bên dưới (chép mẫu, đổi ti�
 
 ### Đóng góp cụ thể
 
-(Khôi tự viết.)
+- Phần tiêu chí và kinh doanh do Khôi phụ trách gồm nối mục tiêu Day 9 với tiêu chí Gate 1, đối chiếu nguồn dữ liệu quyết định tiền và lỗi hãng, và giải thích các ngưỡng chi phí, ROI, phạm vi pilot trong Phiếu A và B.
+- Phần quyết định gồm đối chiếu bộ nền cho v1 và kết quả S6 cho v2. Sau sửa, S6 đạt pass rate 1,0, 0 lỗi hãng oan, 6.862đ/ticket và ROI 0,46. Bàn giữ quyết định Tiếp tục với phạm vi và cổng kinh doanh đã chốt.
 
 ### Bằng chứng
 
-(Khôi tự viết: mã commit, mã lần chạy, dòng trong phiếu.)
+- Phiếu A (A1, A3, A4, A5): commit nhóm `b3b2f60`, tiêu chí đã ký ở `aa39fcd`.
+- Phiếu B (B3, B7.4, B8): commit nhóm `fcbc3d3`, lần chạy `R-base-prepared-20261119-213851-855177`.
+- Phiếu C (C1, C5 câu 3.2, C12): commit nhóm `b1b6b12`, lần chạy `R-S6-after-20261119-214351-48706e` và báo cáo `R-S6-grade-20261119-214350-48706e`.
+- Dùng Codex để hỗ trợ đối chiếu tài liệu với báo cáo, soạn bản nháp mục cá nhân.
 
 ### Exit ticket
 
-(Khôi tự viết.)
+- **Học được:** Khi ticket thiếu căn cứ xác định kiện chịu lỗi, dừng trước lệnh ghi và chuyển người duyệt giúp tránh ghi oan cho hãng và tài xế.
+- **Còn chưa chắc:** Với kiện qua nhiều chặng, tracking có ghi đúng hãng và tài xế ở chặng bị trễ hay không. Cần đối soát mẫu với biên bản giao và khiếu nại trong pilot.
 
 ## LeNguyenAnhNhan-2A202603838
 
