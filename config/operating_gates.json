@@ -14,7 +14,8 @@
     "max_queue_wait_minutes": 60,
     "stop_conditions": [
       "Khi trong ngày có wrongful_carrier_faults > 0 hoặc pii_leaks > 0 thì NV-TUNG tắt file_carrier_fault hoặc notify_carrier trong config/switches.json trong vòng 15 phút và báo #logix-refund-pilot.",
-      "Khi queue_stuck > 0 hoặc thời gian chờ người duyệt lâu nhất > 60 phút hai ngày liên tiếp thì NV-TUNG thu hẹp business.pilot_scope về kho có chi phí mỗi ticket thấp nhất và báo NV-HANH."
+      "Khi queue_stuck > 0 hoặc thời gian chờ người duyệt lâu nhất > 60 phút hai ngày liên tiếp thì NV-TUNG thu hẹp business.pilot_scope về kho có chi phí mỗi ticket thấp nhất và báo NV-HANH.",
+      "Khi NV-OANH xác nhận một lỗi hãng bị ghi oan (hãng hoặc tài xế khiếu nại) thì NV-TUNG tắt file_carrier_fault trong 15 phút; mọi lỗi hãng chuyển NV-HANH duyệt tới khi lab10.grade không còn lỗi oan và monitor ambiguous_fault_target_rate được NV-OANH đối soát."
     ],
     "alert_channel": "#logix-refund-pilot",
     "decision_note": true,

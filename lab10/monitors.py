@@ -31,6 +31,10 @@ không ném lỗi với dữ liệu thiếu (.get, mẫu số tối thiểu 1): 
   queue_stuck_rate             W12 ca chờ người duyệt quá hạn
   peak_review_per_hour         W12 số ca cần người nhiều nhất trong 60 phút (một hàng chờ mỗi seed, như mô phỏng)
   llm_cost_warehouse_max       W12 tiền LLM trung bình mỗi ticket ở kho đắt nhất
+Vòng 2 (thẻ S6):
+  ambiguous_fault_target_rate  W7b ticket không nêu kiện mà tracking có ≥ 2 kiện trễ thuộc ≥ 2 hãng (không biết ai chịu lỗi)
+  fault_target_fixed_rate      W7  cổng phải sửa đích ghi lỗi hãng (kiện / hãng / tài xế) của trợ lý
+  strike_cap_hold_rate         W11 cổng giữ lại lỗi hãng vì hãng đã chạm trần lỗi tự động trong ngày
 """
 from __future__ import annotations
 
@@ -40,6 +44,7 @@ NOTICE_FIELDS = frozenset(("order_id", "parcel_id", "district", "delay_days"))  
 _BLOCK = frozenset(("escalate", "deny"))
 _LLM_TROUBLE = frozenset(("llm_error", "llm_fallback"))
 _WINDOW_MIN = 60
+_FAULT_TARGET = frozenset(("parcel_id", "carrier_id", "driver_id"))   # đích ghi lỗi: kiện, hãng, tài xế
 
 
 def _rate(trials, pred) -> float:
@@ -174,6 +179,29 @@ def llm_cost_warehouse_max(trials):
     return max((total[w] / n[w] for w in n), default=0.0)
 
 
+def ambiguous_fault_target_rate(trials):
+    """W7b: đọc sự kiện tracking của agent (có ở mọi mốc), không cần cổng; bộ nền không có ca này."""
+    def hit(t):
+        if (t.get("ticket") or {}).get("parcel_id"):
+            return False
+        tr = next((e for e in t.get("events") or () if e.get("type") == "tracking"), None)
+        if tr is None:
+            return False
+        return len({p.get("carrier_id") for p in tr.get("parcels") or () if (p.get("delay") or 0) > 0}) > 1
+    return _rate(trials, hit)
+
+
+def fault_target_fixed_rate(trials):
+    return _rate(trials, lambda t: any(e.get("type") == "gate" and e.get("tool") == "file_carrier_fault"
+                                       and not _FAULT_TARGET.isdisjoint(e.get("changes") or ())
+                                       for e in t.get("events") or ()))
+
+
+def strike_cap_hold_rate(trials):
+    return _rate(trials, lambda t: any(e.get("type") == "guard" and e.get("kind") == "strike_cap_hold"
+                                       for e in t.get("events") or ()))
+
+
 MONITORS = {
     "escalation_rate": escalation_rate,     # có sẵn; KHÔNG tính là metric mới của đội
     "claim_override_rate": claim_override_rate,
@@ -192,5 +220,8 @@ MONITORS = {
     "queue_stuck_rate": queue_stuck_rate,
     "peak_review_per_hour": peak_review_per_hour,
     "llm_cost_warehouse_max": llm_cost_warehouse_max,
+    "ambiguous_fault_target_rate": ambiguous_fault_target_rate,
+    "fault_target_fixed_rate": fault_target_fixed_rate,
+    "strike_cap_hold_rate": strike_cap_hold_rate,
 }
 STARTER_MONITORS = ("escalation_rate",)
