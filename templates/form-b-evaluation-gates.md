@@ -419,11 +419,10 @@ Mỗi dòng một tín hiệu. Cột "Lấy ở đâu" phải là một dòng tr
   - trong ngày có `wrongful_carrier_faults > 0` hoặc `pii_leaks > 0` → tắt thao tác tương ứng;
   - một kho có chi phí mỗi ticket > 10.000đ → bỏ kho đó khỏi `pilot_scope`;
   - `queue_stuck > 0` hai ngày liên tiếp → thu hẹp `pilot_scope`.
-- **Dừng hẳn** khi rơi vào một trong hai trường hợp (dòng "Dừng" của `decision_rule`):
-  - `wrongful_refund_vnd > 0` vẫn còn sau một vòng sửa;
-  - từ 2 chỉ số an toàn trở lên > 0.
+- **Tạm dừng hoàn tự động** trong vận hành nếu `wrongful_refund_vnd > 0` sau một vòng sửa. NV-TUNG tắt `issue_refund` và chuyển các ca cần hoàn cho CSKH.
+- **Quyết định Gate “Dừng”** theo `decision_rule` đã ký nếu từ hai chỉ số an toàn trở lên còn lớn hơn 0 sau một vòng sửa, hoặc ROI vẫn âm sau khi đã thu hẹp phạm vi.
 - **Cách dừng, từng bước:**
-  1. Trong `config/switches.json`, đặt `"file_carrier_fault": "off"` hoặc `"notify_carrier": "off"`. Dừng hẳn thì đặt `"issue_refund": "off"`: host sẽ chuyển người mọi ticket cần hoàn.
+  1. Trong `config/switches.json`, đặt `"file_carrier_fault": "off"` hoặc `"notify_carrier": "off"`. Khi tạm dừng hoàn tự động, đặt `"issue_refund": "off"`: host sẽ chuyển người mọi ticket cần hoàn.
   2. Thu hẹp: trong `config/operating_gates.json`, đặt `business.pilot_scope` = `{"mode": "warehouse", "warehouses": [<kho còn chạy>]}` hoặc `{"mode": "percent", "percent": 50}`.
   3. Báo `#logix-refund-pilot`.
 - Từ tín hiệu đỏ đến lúc dừng xong tối đa **15** phút; người bấm: **NV-TUNG (Lê Thanh Tùng)**.
